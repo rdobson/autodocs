@@ -1,0 +1,16 @@
+<h1>Pages</h1>
+
+<ul>
+{% for page in page_list %}
+<li>
+{{ page.name }}
+<a href={% url "generate:page_update" page.pk %}>[Update]</a>
+<a href={% url "generate:page_delete" page.pk %}>[Delete]</a>
+<a href={% url "generate:page-render" page.pk %}>[Render]</a>
+</li>
+{% endfor %}
+</ul>
+
+{% if not page_list %}
+<div class="message">Sorry, there are no pages defined yet.</div>
+{% endif %}
