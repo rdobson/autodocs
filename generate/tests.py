@@ -6,11 +6,12 @@ Replace this with more appropriate tests for your application.
 """
 
 from django.test import TestCase
+from models import *
+from templates.models import Template
 
+class PageModelTests(TestCase):
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_page_create(self):
+        template = Template.objects.create(name='Test Template', data='<html></html>')
+        page = Page.objects.create(location='blah', template=template)
+
