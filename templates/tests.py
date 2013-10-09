@@ -7,6 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from templates.models import *
+from templates import views
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 
@@ -30,7 +31,6 @@ class TemplateTests(TestCase):
         template = Template(name=self.template_name, data=self.template_str)
         self.assertEqual(template.get_name(), self.template_name)
 
-
 ################# View Tests ########################
 
 def create_template(name, data):
@@ -48,7 +48,7 @@ class TemplateIndexTests(TestCase):
         template_name = "Test Template 1"
         create_template(name=template_name, data="<html></html>")
         # Make the call
-        response = self.client.get(reverse('templates:index'))
+        response = self.client.get(reverse('templates:template-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, template_name)
 
