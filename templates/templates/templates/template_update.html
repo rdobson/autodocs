@@ -1,0 +1,11 @@
+<h1>Update template</h1>
+
+<form action="{% url "templates:template_update" template.pk  %}" method="POST">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input id="save_template" type="submit" value="Save" />
+    </form>
+
+    <a href="{% url "templates:template-list" %}">Back to templates.</a>
