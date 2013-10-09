@@ -1,0 +1,9 @@
+<h1>Add Page</h1>
+
+<form action="{% url "generate:page_create" %}" method="POST">
+{% csrf_token %}
+<table>
+{{ form.as_table }}
+</table>
+<input id="save_page", type="submit", value="Create" />
+</form>
