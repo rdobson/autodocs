@@ -14,3 +14,6 @@ class Template(models.Model):
 
     def get_absolute_url(self):
         return reverse('templates:template_update', kwargs={'pk':self.pk})
+    
+    def __unicode__(self):
+        return self.name

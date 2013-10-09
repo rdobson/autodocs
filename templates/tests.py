@@ -31,6 +31,13 @@ class TemplateTests(TestCase):
         template = Template(name=self.template_name, data=self.template_str)
         self.assertEqual(template.get_name(), self.template_name)
 
+    def test_str_name(self):
+        """
+        Test that when the object is printed, the template name is used.
+        """
+        template = Template(name=self.template_name, data=self.template_str)
+        self.assertEqual(str(template), self.template_name)
+
 ################# View Tests ########################
 
 def create_template(name, data):
