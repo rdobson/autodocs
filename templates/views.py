@@ -8,6 +8,7 @@ from models import *
 class TemplateCreate(generic.edit.CreateView):
     model = Template
     fields = ['name', 'data']
+    template_name_suffix = '_create'
 
 class TemplateUpdate(generic.edit.UpdateView):
     model = Template
@@ -21,7 +22,6 @@ class TemplateDelete(generic.edit.DeleteView):
     template_name_suffix = '_check_delete'
     
 class IndexView(generic.ListView):
-    template_name = 'list.html'
     context_object_name = 'template_list'
     
     def get_queryset(self):
