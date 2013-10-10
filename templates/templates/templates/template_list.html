@@ -1,14 +1,20 @@
-<h1>Templates</h1>
+{% extends "base.html" %}
+{% block content %}
+    <div class="span9">
 
-<ul>
-{% for template in template_list %}
-<li> {{ template.name }}
-<a href={% url "templates:template_update" template.pk  %}>[Update]</a>
-<a href={% url "templates:template_delete" template.pk %}>[Delete]</a>
-</li>
-{% endfor %}
-{% if not template_list %}
-<div class="message">Sorry, there are no templates defined yet.</div>
-{% endif %}
-</ul>
+    <h1>Templates</h1>
+
+    <ul>
+    {% for template in template_list %}
+    <li> {{ template.name }}
+    <a href={% url "templates:template_update" template.pk  %}>[Update]</a>
+    <a href={% url "templates:template_delete" template.pk %}>[Delete]</a>
+    </li>
+    {% endfor %}
+    {% if not template_list %}
+    <div class="message">Sorry, there are no templates defined yet.</div>
+    {% endif %}
+    </ul>
+</div>
+{% endblock %}
 

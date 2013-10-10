@@ -1,11 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="span9">
 <h1>Update template</h1>
 
 <form action="{% url "templates:template_update" template.pk  %}" method="POST">
     {% csrf_token %}
-    <table>
-    {{ form.as_table }}
-    </table>
+
+   <label for="id_name">Name</label>
+    <input id="id_name" maxlength="200" name="name" type="text" /><br/>
+    <label for="id_data">Data</label><br/>
+    <textarea id="id_data" name="data" cols=100;></textarea><br/>
     <input id="save_template" type="submit" value="Save" />
     </form>
 
     <a href="{% url "templates:template-list" %}">Back to templates.</a>
+</div>
+{% endblock %}
