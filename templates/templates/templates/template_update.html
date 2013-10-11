@@ -7,9 +7,9 @@
     {% csrf_token %}
 
    <label for="id_name">Name</label>
-    <input id="id_name" maxlength="200" name="name" type="text" /><br/>
+    <input id="id_name" maxlength="200" name="name" type="text" value="{{ template.name }}"/><br/>
     <label for="id_data">Data</label><br/>
-    <textarea id="id_data" name="data" cols=100;></textarea><br/>
+    <textarea id="id_data" name="data" cols=100;>{{ template.data }}</textarea><br/>
     <input id="save_template" type="submit" value="Save" />
     </form>
 
