@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^templates/', include('templates.urls', namespace='templates')),
     url(r'^articles/', include('articles.urls', namespace='articles')),
     url(r'^products/', include('products.urls', namespace='products')),
+    url(r'^hotfixes/', include('hotfixes.urls', namespace='hotfixes')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

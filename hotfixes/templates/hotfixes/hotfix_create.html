@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="span9">
+<h1>Add Hotfix</h1>
+
+<form action="{% url "hotfixes:hotfix_create" %}" method="POST">
+    {% csrf_token %}
+
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input id="save_hotfix" type="submit" value="Create" />
+    </form>
+
+    <a href="{% url "hotfixes:hotfix-list" %}">Back to hotfixes.</a>
+</div>
+{% endblock %}

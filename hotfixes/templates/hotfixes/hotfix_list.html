@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="span9">
+
+    <h1>Hotfixes</h1>
+
+    <ul>
+    {% for hotfix in hotfix_list %}
+    <li> {{ hotfix.name }}
+    <a href={% url "hotfixes:hotfix_update" hotfix.pk  %}>[Update]</a>
+    <a href={% url "hotfixes:hotfix_delete" hotfix.pk %}>[Delete]</a>
+    </li>
+    {% endfor %}
+    {% if not hotfix_list %}
+    <div class="message">Sorry, there are no hotfixes defined yet.</div>
+    {% endif %}
+    </ul>
+</div>
+{% endblock %}
+

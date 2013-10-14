@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="span9">
+<h1>Update hotfix</h1>
+
+<form action="{% url "hotfixes:hotfix_update" hotfix.pk  %}" method="POST">
+    {% csrf_token %}
+
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input id="save_hotfix" type="submit" value="Save" />
+    </form>
+
+    <a href="{% url "hotfixes:hotfix-list" %}">Back to hotfixes.</a>
+</div>
+{% endblock %}
