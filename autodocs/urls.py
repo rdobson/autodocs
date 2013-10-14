@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     url(r'^$', HomeView.as_view(), name='home'),
     # url(r'^autodocs/', include('autodocs.foo.urls')),
     url(r'^templates/', include('templates.urls', namespace='templates')),
-    url(r'^generate/', include('generate.urls', namespace='generate')),
+    url(r'^articles/', include('articles.urls', namespace='articles')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

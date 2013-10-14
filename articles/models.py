@@ -17,7 +17,7 @@ class Article(models.Model):
     original_ctx = models.CharField(max_length=10, blank=True)
 
     def get_absolute_url(self):
-        return reverse('generate:article_update', kwargs={'pk':self.pk})
+        return reverse('articles:article_update', kwargs={'pk':self.pk})
 
     def __unicode__(self):
         return self.name

@@ -3,7 +3,7 @@
 <div class="span9">
 <h1>Add Article</h1>
 
-<form action="{% url "generate:article_create" %}" method="POST">
+<form action="{% url "articles:article_create" %}" method="POST">
 {% csrf_token %}
 <table>
 {{ form.as_table }}

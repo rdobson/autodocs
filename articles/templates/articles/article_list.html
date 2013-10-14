@@ -7,9 +7,9 @@
 {% for article in article_list %}
 <li>
 {{ article.name }}
-<a href={% url "generate:article_update" article.pk %}>[Update]</a>
-<a href={% url "generate:article_delete" article.pk %}>[Delete]</a>
-<a href={% url "generate:article-render" article.pk %}>[Render]</a>
+<a href={% url "articles:article_update" article.pk %}>[Update]</a>
+<a href={% url "articles:article_delete" article.pk %}>[Delete]</a>
+<a href={% url "articles:article-render" article.pk %}>[Render]</a>
 </li>
 {% endfor %}
 </ul>

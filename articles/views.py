@@ -74,7 +74,7 @@ class ArticleDelete(generic.edit.DeleteView):
     model = Article
     fields = ['name', 'location', 'template']
     template_name_suffix = '_check_delete'
-    success_url = reverse_lazy('generate:article-list')
+    success_url = reverse_lazy('articles:article-list')
 
 class ArticleList(generic.ListView):
     context_object_name = 'article_list'
@@ -108,7 +108,7 @@ class ArticleRender(generic.base.View):
 
         if request.GET.get('show_data',False):
             describe_data = describe_datasource(render_data)
-            return render_to_response('generate/describe_datasource.html',
+            return render_to_response('articles/describe_datasource.html',
                                         {'attributes': describe_data})
 
         return HttpResponse(jinja_template.render(**render_data.export()))

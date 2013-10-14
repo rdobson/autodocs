@@ -17,8 +17,8 @@ class ArticleModelTests(TestCase):
         page = Article.objects.create(location='blah', template=template)
 
 
-class GenerateViewTests(TestCase):
+class ArticlesViewTests(TestCase):
 
     def test_article_create_view_expect_200(self):
-        response = self.client.get(reverse('generate:article_create'))
+        response = self.client.get(reverse('articles:article_create'))
         self.assertEqual(response.status_code, 200)
