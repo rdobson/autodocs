@@ -3,6 +3,7 @@
 from django.views import generic
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 import jinja2
 
 from articlegenerator.extract import *
@@ -15,7 +16,48 @@ REPO_BASE_LOC = '/tmp/'
 def get_driver_repo_data_source(location):
     data_source = DriverRepoDataSource(REPO_BASE_LOC + location)
     data_source.collect()
-    return data_source 
+    return data_source
+
+def describe_datasource(datasource):
+    """
+    Convert the contents of a data_source into a list of lists for attrs.
+
+    Each param should contain:
+    - Group
+        [ name, value ]
+
+    """    
+    rec = datasource.export()
+
+    def recurse_values(key, vals):
+        res = []
+        if type(vals) == type(unicode()):
+            # String
+            res.append({'name': key, 'value': vals})
+        elif type(vals) == type({}):
+            # Dictionary
+            for k, v in vals.iteritems():
+                if key:
+                    key_str = "%s.%s" % (key, k)
+                else:
+                    key_str = k
+                res.append({'name': key_str, 'value': v})
+        elif type(vals) == type([]):
+            # List
+            mlist = []
+            for val in vals:
+                mlist.append(recurse_values(None, val))
+            
+            rec = {'name': key, 'value': mlist, 'group':True}
+            res.append(rec)
+        return res
+
+    res = []
+    for k, v in rec.iteritems():
+        res.extend(recurse_values(k, v))
+    return res
+        
+
 
 class ArticleCreate(generic.edit.CreateView):
     model = Article
@@ -60,6 +102,15 @@ class ArticleRender(generic.base.View):
         jinja_template = jinja2.Template(template.data)
 
         render_data = article_data + repo_data
+
+        if request.GET.get('raw_data',False):
+            return HttpResponse(str(describe_datasource(render_data)))
+
+        if request.GET.get('show_data',False):
+            describe_data = describe_datasource(render_data)
+            return render_to_response('generate/describe_datasource.html',
+                                        {'attributes': describe_data})
+
         return HttpResponse(jinja_template.render(**render_data.export()))
 
 

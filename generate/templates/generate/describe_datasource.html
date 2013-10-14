@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="span9">
+
+<h1>Describe Data Source</h1>
+{% for attribute in attributes %}
+
+<ul>
+{% if attribute.group %}
+<li>
+<hr/>
+<h4>{{ attribute.name }} (list)</h4>
+    {% for sub_list in attribute.value %}
+    <ul>
+    <hr/>
+    {% for sub_item in sub_list %}
+        <li>{{ sub_item.name }}: {{ sub_item.value }}</li>
+    {% endfor %}
+    </ul>
+
+    {% endfor %}
+</li>
+{% else %}
+
+<li>{{ attribute.name }} = {{ attribute.value }}</li>
+
+{% endif %}
+</ul>
+{% endfor %}
+</div>
+{% endblock %}
