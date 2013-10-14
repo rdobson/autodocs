@@ -8,9 +8,10 @@
 <table>
 {{ form.as_table }}
 </table>
-<input id="save_article" type="submit" value="Save" />
+</br>
+    <input class="btn btn-primary" id="save_article" type="submit" value="Save" />
+    <a class="btn" href="{% url "generate:article-render" article.pk %}">Render</a>
 </form>
-
 <a href="{% url "generate:article-list" %}">Back to articles.</a>
 </div>
 {% endblock %}
