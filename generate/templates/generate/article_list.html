@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="span9">
+<h1>Articles</h1>
+
+<ul>
+{% for article in article_list %}
+<li>
+{{ article.name }}
+<a href={% url "generate:article_update" article.pk %}>[Update]</a>
+<a href={% url "generate:article_delete" article.pk %}>[Delete]</a>
+<a href={% url "generate:article-render" article.pk %}>[Render]</a>
+</li>
+{% endfor %}
+</ul>
+
+{% if not article_list %}
+<div class="message">Sorry, there are no articles defined yet.</div>
+{% endif %}
+</div>
+{% endblock %}
