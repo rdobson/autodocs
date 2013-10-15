@@ -13,7 +13,7 @@ from templates.models import Template
 from products.models import Product
 from hotfixes.models import Hotfix
 
-REPO_BASE_LOC = '/tmp/'
+REPO_BASE_LOC = '/repos/'
 
 def get_driver_repo_data_source(location):
     data_source = DriverRepoDataSource(REPO_BASE_LOC + location)
