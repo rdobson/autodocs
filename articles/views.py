@@ -10,6 +10,8 @@ from articlegenerator.extract import *
 
 from models import *
 from templates.models import Template
+from products.models import Product
+from hotfixes.models import Hotfix
 
 REPO_BASE_LOC = '/tmp/'
 
@@ -83,35 +85,53 @@ class ArticleList(generic.ListView):
         return Article.objects.all()
 
 
+def get_model_attributes(model_inst):
+    """
+    Return the list of attribute names of a Django model.
+    """
+    attrs = [i for i in dir(model_inst) if not i.startswith('__')]
+    return attrs
+
+
+def model_to_datasource(model_inst):
+    """
+    Take a Django model instance, and return a datasource
+    that can be used to populate an article.
+    """
+    rec = {}
+    fields = model_inst._meta.fields
+    for field in fields:
+        field_key = "%s_%s" % (model_inst.__class__.__name__.lower(), field.name)
+        rec[field_key] = getattr(model_inst, field.name)
+    return rec
+
 class ArticleRender(generic.base.View):
     
     def get(self, request, pk):
         article = Article.objects.get(pk=pk)
-        article_rec = { 
-                        'xs_version'            : article.xs_version,
-                        'vendor_name'           : article.vendor_name,
-                        'supp_pack_guide_ctx'   : article.supp_pack_guide_ctx,
-                        'hotfix_name'           : article.hotfix_name,
-                        'hotfix_ctx'            : article.hotfix_ctx,
-                        'original_ctx'          : article.original_ctx,
-                   }
-        article_data = ArticleDataSource(data=article_rec)
-        repo_data = get_driver_repo_data_source(article.location)
+        models = [article, article.product, article.hotfix]
+
+        ds = ArticleDataSource()
+        for model in models:
+            data_rec = model_to_datasource(model)
+            print data_rec
+            print "ds.export() %s" % ds.export()
+            ds = ds + ArticleDataSource(data=data_rec)
+
+        ds = ds + get_driver_repo_data_source(article.location)
 
         template = Template.objects.get(pk=article.template.pk)
         jinja_template = jinja2.Template(template.data)
 
-        render_data = article_data + repo_data
-
         if request.GET.get('raw_data',False):
-            return HttpResponse(str(describe_datasource(render_data)))
+            return HttpResponse(str(describe_datasource(ds)))
 
         if request.GET.get('show_data',False):
-            describe_data = describe_datasource(render_data)
+            describe_data = describe_datasource(ds)
             return render_to_response('articles/describe_datasource.html',
                                         {'attributes': describe_data})
 
-        return HttpResponse(jinja_template.render(**render_data.export()))
+        return HttpResponse(jinja_template.render(**ds.export()))
 
 
 

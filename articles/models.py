@@ -7,14 +7,12 @@ class Article(models.Model):
     template = models.ForeignKey('templates.Template')
 
     # Attributes needed
-    xs_version = models.CharField(max_length=10)
     vendor_name = models.CharField(max_length=100)
-    supp_pack_guide_ctx = models.CharField(max_length=10)
+    product = models.ForeignKey('products.Product')
 
     # Just for hotfixes
-    hotfix_name = models.CharField(max_length=20, blank=True)
-    hotfix_ctx = models.CharField(max_length=10, blank=True)
-    original_ctx = models.CharField(max_length=10, blank=True)
+    hotfix = models.ForeignKey('hotfixes.Hotfix')
+    original_ctx = models.CharField(max_length=15)
 
     def get_absolute_url(self):
         return reverse('articles:article_update', kwargs={'pk':self.pk})
