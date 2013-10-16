@@ -47,7 +47,8 @@ class ArticleModelTests(TestCase):
                                          supp_pack_guide_ctx='CTX12542')  
         hotfix = Hotfix.objects.create(name='Blah',
                                        version='HFX602E01',
-                                       ctx='CTX23523')
+                                       ctx='CTX23523',
+                                       product=product)
         page = Article.objects.create(location='blah', 
                                       template=template,
                                       product=product,
