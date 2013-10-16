@@ -82,7 +82,7 @@ class ArticleList(generic.ListView):
     context_object_name = 'article_list'
         
     def get_queryset(self):
-        return Article.objects.all()
+        return Article.objects.all().order_by('-updated_at')
 
 
 def get_model_attributes(model_inst):

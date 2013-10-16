@@ -14,6 +14,10 @@ class Article(models.Model):
     hotfix = models.ForeignKey('hotfixes.Hotfix')
     original_ctx = models.CharField(max_length=15)
 
+    # Generic attributes
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
+
     def get_absolute_url(self):
         return reverse('articles:article_update', kwargs={'pk':self.pk})
 
