@@ -1,5 +1,8 @@
 from django.db import models
 from django.core.urlresolvers import reverse
+from smart_selects.db_fields import ChainedForeignKey
+
+from hotfixes.models import Hotfix
 
 class Article(models.Model):
     name = models.CharField(max_length=50)
@@ -11,7 +14,13 @@ class Article(models.Model):
     product = models.ForeignKey('products.Product')
 
     # Just for hotfixes
-    hotfix = models.ForeignKey('hotfixes.Hotfix', blank=True, null=True)
+    # Use a chained field to allow for auto-drop-down.
+    hotfix = ChainedForeignKey(
+                                'hotfixes.Hotfix', chained_field='product', 
+                                chained_model_field='product', 
+                                show_all=False,
+                                auto_choose=True
+                              )
     original_ctx = models.CharField(max_length=15, blank=True, null=True)
 
     # Generic attributes
