@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 class Hotfix(models.Model): 
     name = models.CharField(max_length=50)
     version = models.CharField(max_length=15)
+    product = models.ForeignKey('products.Product')
     ctx = models.CharField(max_length=10)
 
     def get_absolute_url(self):
