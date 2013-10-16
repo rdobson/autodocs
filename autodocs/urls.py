@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^articles/', include('articles.urls', namespace='articles')),
     url(r'^products/', include('products.urls', namespace='products')),
     url(r'^hotfixes/', include('hotfixes.urls', namespace='hotfixes')),
+    url(r'^chaining/', include('smart_selects.urls')),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

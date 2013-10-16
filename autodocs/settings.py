@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'templates',
     'products',
     'hotfixes',
+    'smart_selects',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
