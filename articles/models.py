@@ -11,8 +11,8 @@ class Article(models.Model):
     product = models.ForeignKey('products.Product')
 
     # Just for hotfixes
-    hotfix = models.ForeignKey('hotfixes.Hotfix')
-    original_ctx = models.CharField(max_length=15)
+    hotfix = models.ForeignKey('hotfixes.Hotfix', blank=True, null=True)
+    original_ctx = models.CharField(max_length=15, blank=True, null=True)
 
     # Generic attributes
     created_at = models.DateTimeField(auto_now_add = True)

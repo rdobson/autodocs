@@ -113,10 +113,11 @@ class ArticleRender(generic.base.View):
 
         ds = ArticleDataSource()
         for model in models:
-            data_rec = model_to_datasource(model)
-            print data_rec
-            print "ds.export() %s" % ds.export()
-            ds = ds + ArticleDataSource(data=data_rec)
+            if model:
+                data_rec = model_to_datasource(model)
+                print data_rec
+                print "ds.export() %s" % ds.export()
+                ds = ds + ArticleDataSource(data=data_rec)
 
         ds = ds + get_driver_repo_data_source(article.location)
 
