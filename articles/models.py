@@ -19,7 +19,9 @@ class Article(models.Model):
                                 'hotfixes.Hotfix', chained_field='product', 
                                 chained_model_field='product', 
                                 show_all=False,
-                                auto_choose=True
+                                auto_choose=True,
+                                blank=True,
+                                null=True,
                               )
     original_ctx = models.CharField(max_length=15, blank=True, null=True)
 
