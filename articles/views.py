@@ -13,6 +13,8 @@ from templates.models import Template
 from products.models import Product
 from hotfixes.models import Hotfix
 
+import re
+
 REPO_BASE_LOC = '/repos/'
 
 def get_driver_repo_data_source(location):
@@ -105,6 +107,31 @@ def model_to_datasource(model_inst):
         rec[field_key] = getattr(model_inst, field.name)
     return rec
 
+def parse_source_path(loc):
+    """
+    Take a location (as supplied by the user), and convert it to the
+    source path that should be used to access the repo. In particular
+    this function allows the user to specify either the source path,
+    or the HG web URL - and we will convert as required.
+    """
+
+    hg_url_regex = 'http://hg.uk.xensource.com/carbon/(?P<branch>[\w\-]*)/driverdisks.hg/file/[0-9a-f]{12}/(?P<path>[\w\.\-\/]*$)'
+    regex = re.compile(hg_url_regex)
+    match = regex.match(loc)
+
+    if match:
+        # We've matched a web URL
+        fs_path = "%s/driverdisks.hg/%s" % (match.group('branch'), 
+                                            match.group('path'))
+        return fs_path
+
+    if loc.startswith('carbon/'):
+        # Catch the case where the carbon dir has been included.
+        # This is not required.
+        return loc.replace('carbon/','')
+
+    return loc
+
 class ArticleRender(generic.base.View):
     
     def get(self, request, pk):
@@ -119,7 +146,8 @@ class ArticleRender(generic.base.View):
                 print "ds.export() %s" % ds.export()
                 ds = ds + ArticleDataSource(data=data_rec)
 
-        ds = ds + get_driver_repo_data_source(article.location)
+        source_path = parse_source_path(article.location)
+        ds = ds + get_driver_repo_data_source(source_path)
 
         template = Template.objects.get(pk=article.template.pk)
         jinja_template = jinja2.Template(template.data)
