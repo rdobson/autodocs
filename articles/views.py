@@ -12,8 +12,8 @@ from models import *
 from templates.models import Template
 from products.models import Product
 from hotfixes.models import Hotfix
-
 import re
+from os.path import basename
 
 REPO_BASE_LOC = '/repos/'
 
@@ -32,10 +32,9 @@ def describe_datasource(datasource):
 
     """    
     rec = datasource.export()
-
     def recurse_values(key, vals):
         res = []
-        if type(vals) == type(unicode()):
+        if type(vals) in [type(unicode()), type(str())]:
             # String
             res.append({'name': key, 'value': vals})
         elif type(vals) == type({}):
@@ -132,6 +131,32 @@ def parse_source_path(loc):
 
     return loc
 
+def get_akamai_url(zip_file):
+    """
+    Take a driver repo location and attempt to find 
+    """
+    fh = open('/home/xenbuild/xs-logs/akamai/uploads','r')
+    lines = fh.readlines()
+    fh.close()
+    res = []
+    for line in lines:
+        date, time, akamai_url, zip_file_path = line.split()
+        if zip_file in zip_file_path:
+            res.append(akamai_url)
+    if len(res) > 1:
+        raise Exception("Error: more than one match for %s: %s" % (zip_file, res))
+    if res:
+        return res.pop()
+    else:
+        return None
+
+def get_akamai_data_source(data_rec):
+    zip_loc = "%s/%s" % (basename(data_rec['article_location']), data_rec['zip']['filename'])
+    print zip_loc
+    akamai_rec = {}
+    akamai_rec['akamai_zip_url'] = get_akamai_url(zip_loc)
+    return ArticleDataSource(data=akamai_rec)
+
 class ArticleRender(generic.base.View):
     
     def get(self, request, pk):
@@ -142,12 +167,11 @@ class ArticleRender(generic.base.View):
         for model in models:
             if model:
                 data_rec = model_to_datasource(model)
-                print data_rec
-                print "ds.export() %s" % ds.export()
                 ds = ds + ArticleDataSource(data=data_rec)
 
         source_path = parse_source_path(article.location)
         ds = ds + get_driver_repo_data_source(source_path)
+        ds = ds + get_akamai_data_source(ds.export())
 
         template = Template.objects.get(pk=article.template.pk)
         jinja_template = jinja2.Template(template.data)
