@@ -16,6 +16,7 @@ import re
 from os.path import basename
 
 REPO_BASE_LOC = '/repos/'
+AKAMAI_LOGS = '/home/xenbuild/xs-logs/akamai/uploads'
 
 def get_driver_repo_data_source(location):
     data_source = DriverRepoDataSource(REPO_BASE_LOC + location)
@@ -131,11 +132,11 @@ def parse_source_path(loc):
 
     return loc
 
-def get_akamai_url(zip_file):
+def get_akamai_url(zip_file, akamai_logs=AKAMAI_LOGS):
     """
     Take a driver repo location and attempt to find 
     """
-    fh = open('/home/xenbuild/xs-logs/akamai/uploads','r')
+    fh = open(akamai_logs,'r')
     lines = fh.readlines()
     fh.close()
     res = []
@@ -143,6 +144,7 @@ def get_akamai_url(zip_file):
         date, time, akamai_url, zip_file_path = line.split()
         if zip_file in zip_file_path:
             res.append(akamai_url)
+    res = set(res) #Remove duplicates if in existence.
     if len(res) > 1:
         raise Exception("Error: more than one match for %s: %s" % (zip_file, res))
     if res:
@@ -152,7 +154,6 @@ def get_akamai_url(zip_file):
 
 def get_akamai_data_source(data_rec):
     zip_loc = "%s/%s" % (basename(data_rec['article_location']), data_rec['zip']['filename'])
-    print zip_loc
     akamai_rec = {}
     akamai_rec['akamai_zip_url'] = get_akamai_url(zip_loc)
     return ArticleDataSource(data=akamai_rec)

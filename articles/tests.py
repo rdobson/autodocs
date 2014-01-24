@@ -12,6 +12,10 @@ from templates.models import Template
 from products.models import Product
 from hotfixes.models import Hotfix
 from django.core.urlresolvers import reverse
+import tempfile
+import os
+
+AKAMAI_BASE = "http://downloadns.citrix.com.edgesuite.net"
 
 
 class ModelUtilFunctions(TestCase):
@@ -65,6 +69,32 @@ class ModelUtilFunctions(TestCase):
         sanitised_loc = parse_source_path(web_url)
         self.assertEqual(sanitised_loc, fs_path)
 
+    def test_get_akamai_url(self):
+        zip_loc = "QL-196-GA-2.6.32.43-0.4.1.xs1.6.10.734.170748xen/qla2xxx-8.06.00.10.55.6-k-GA.zip"
+        url = get_akamai_url(zip_loc)
+        self.assertEqual(url, '%s/8460/qla2xxx-8.06.00.10.55.6-k-GA.zip' % AKAMAI_BASE)
+
+    def test_get_akamai_data_source(self):
+        rec = {
+                'article_location': 'http://hg.uk.xensource.com/carbon/tampa-lcm/driverdisks.hg/file/6d4bb42877b2/qla2xxx-8.06.00.10.55.6-k/QL-196-GA-2.6.32.43-0.4.1.xs1.6.10.734.170748xen',
+                'zip': {'filename': 'qla2xxx-8.06.00.10.55.6-k-GA.zip'},
+              }
+
+        ds = get_akamai_data_source(rec)
+        self.assertEqual(ds.export()['akamai_zip_url'], '%s/8460/qla2xxx-8.06.00.10.55.6-k-GA.zip' % AKAMAI_BASE)
+
+
+    def test_get_akamai_url_from_duplicate_list(self):
+        akamai_log_line = "2014-01-24 16:10:45+00:00 http://downloadns.citrix.com.edgesuite.net/8763/fnic-1.6.0.6-XS61E035.zip /usr/groups/sources/HG/carbon/tampa-lcm/driverdisks.hg/fnic-1.6.0.6/CIS-167-XS61E035-2.6.32.43-0.4.1.xs1.6.10.794.170782xen/fnic-1.6.0.6-XS61E035.zip"
+        zip_loc = "CIS-167-XS61E035-2.6.32.43-0.4.1.xs1.6.10.794.170782xen/fnic-1.6.0.6-XS61E035.zip"
+        tmp_file = tempfile.NamedTemporaryFile(delete=False)
+        tmp_file.write('\n'.join([akamai_log_line, akamai_log_line]))
+        tmp_file.close()
+        url = get_akamai_url(zip_loc, akamai_logs=tmp_file.name)
+        self.assertEqual(url, 'http://downloadns.citrix.com.edgesuite.net/8763/fnic-1.6.0.6-XS61E035.zip')
+        os.unlink(tmp_file.name)
+
+
 class ArticleModelTests(TestCase):
 
     def test_article_create(self):
@@ -87,3 +117,4 @@ class ArticlesViewTests(TestCase):
     def test_article_create_view_expect_200(self):
         response = self.client.get(reverse('articles:article_create'))
         self.assertEqual(response.status_code, 200)
+
