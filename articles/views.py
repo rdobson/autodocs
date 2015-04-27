@@ -19,7 +19,7 @@ REPO_BASE_LOC = '/repos/'
 AKAMAI_LOGS = '/home/xenbuild/xs-logs/akamai/uploads'
 
 def get_driver_repo_data_source(location):
-    data_source = DriverRepoDataSource(REPO_BASE_LOC + location)
+    data_source = DriverRepoDataSource(location)
     data_source.collect()
     return data_source
 
@@ -115,6 +115,9 @@ def parse_source_path(loc):
     or the HG web URL - and we will convert as required.
     """
 
+    if loc.startswith("/"):
+        return loc
+
     hg_url_regex = 'http://hg.uk.xensource.com/carbon/(?P<branch>[\w\-]*)/driverdisks.hg/file/[0-9a-f]{12}/(?P<path>[\w\.\-\/]*$)'
     regex = re.compile(hg_url_regex)
     match = regex.match(loc)
@@ -123,14 +126,14 @@ def parse_source_path(loc):
         # We've matched a web URL
         fs_path = "%s/driverdisks.hg/%s" % (match.group('branch'), 
                                             match.group('path'))
-        return fs_path
+        return REPO_BASE_LOC + fs_path
 
     if loc.startswith('carbon/'):
         # Catch the case where the carbon dir has been included.
         # This is not required.
-        return loc.replace('carbon/','')
+        return REPO_BASE_LOC + loc.replace('carbon/','')
 
-    return loc
+    return REPO_BASE_LOC + loc
 
 def get_akamai_url(zip_file, akamai_logs=AKAMAI_LOGS):
     """
